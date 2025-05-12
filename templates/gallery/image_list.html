@@ -1,0 +1,12 @@
+<h1>Latest Images</h1>
+<ul>
+    {% for image in images %}
+        <li>
+            <h2>{{ image.title }}</h2>
+            <img src="{{ image.image_file.url }}" alt="{{ image.description }}">
+            <p>Uploaded on: {{ image.upload_date }} by {{ image.submitter.username }}</p>
+        </li>
+    {% empty %}
+        <li>No images uploaded yet.</li>
+    {% endfor %}
+</ul>

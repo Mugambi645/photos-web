@@ -14,3 +14,21 @@ class Image(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
+class Collection(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    is_public = models.BooleanField(default=True)
+    images = models.ManyToManyField(Image)
+    tags = models.ManyToManyField(Tag)
+
+    def __str__(self):
+        return self.name
