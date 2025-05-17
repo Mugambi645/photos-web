@@ -26,6 +26,16 @@
                             Uploaded on {{ image.upload_date|date:"M d, Y" }}<br>
                             by {{ image.submitter.username }}
                         </div>
+                        <button class="btn btn-outline-danger btn-sm like-btn"
+                        data-id="{{ image.id }}">
+                    ❤️ <span class="like-count">{{ image.total_likes }}</span>
+                    {% if user in image.likes.all %}
+                        <span class="like-text">Unlike</span>
+                    {% else %}
+                        <span class="like-text">Like</span>
+                    {% endif %}
+                </button>
+            </div>
                     </div>
                 </div>
             {% endfor %}
