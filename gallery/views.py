@@ -21,6 +21,13 @@ import urllib.request
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
+
+
+from django.http import FileResponse, Http404
+from django.conf import settings
+import os
+
+
 # Load pre-trained MobileNetV2 model
 model = torchvision.models.mobilenet_v2(pretrained=True)
 model.eval()
@@ -177,3 +184,18 @@ def toggle_like(request, image_id):
 def image_detail(request, image_id):
     image = get_object_or_404(Image, id=image_id)
     return render(request, 'gallery/image_detail.html', {'image': image})
+
+
+
+def download_image(request, image_id):
+    from .models import Image
+    image = get_object_or_404(Image, id=image_id)
+
+    image.download_count += 1
+    image.save()
+
+    file_path = image.image_file.path
+    if os.path.exists(file_path):
+        return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=os.path.basename(file_path))
+    else:
+        raise Http404("Image not found.")

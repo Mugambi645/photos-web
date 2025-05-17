@@ -20,6 +20,7 @@ class Image(models.Model):
     format = models.CharField(max_length=50, null=True, blank=True)
     tags = models.ManyToManyField(Tag)
     likes = models.ManyToManyField(User, related_name='liked_images', blank=True) 
+    download_count = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.title

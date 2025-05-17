@@ -20,8 +20,8 @@
                     </p>
                 </div>
                 <div class="card-footer d-flex justify-content-between">
-                    <a href="{{ image.image_file.url }}" download class="btn btn-success">
-                        ⬇️ Download
+                    <a href="{% url 'gallery:download_image' image.id %}" class="btn btn-success">
+                        ⬇️ Download ({{ image.download_count }})
                     </a>
                     <a href="{% url 'core:index' %}" class="btn btn-outline-secondary">Back</a>
                 </div>
