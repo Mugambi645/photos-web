@@ -1,12 +1,25 @@
-<h1>Latest Images</h1>
-<ul>
-    {% for image in images %}
-        <li>
-            <h2>{{ image.title }}</h2>
-            <img src="{{ image.image_file.url }}" alt="{{ image.description }}">
-            <p>Uploaded on: {{ image.upload_date }} by {{ image.submitter.username }}</p>
-        </li>
-    {% empty %}
-        <li>No images uploaded yet.</li>
-    {% endfor %}
-</ul>
+<div class="container my-5">
+    <h1 class="mb-4">Latest Images</h1>
+
+    {% if images %}
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+            {% for image in images %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <img src="{{ image.image_file.url }}" class="card-img-top" alt="{{ image.description }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ image.title }}</h5>
+                            <p class="card-text">{{ image.description }}</p>
+                        </div>
+                        <div class="card-footer text-muted">
+                            Uploaded on {{ image.upload_date|date:"M d, Y" }}<br>
+                            by {{ image.submitter.username }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">No images uploaded yet.</div>
+    {% endif %}
+</div>

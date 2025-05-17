@@ -20,7 +20,7 @@ def upload_image(request):
 
 def image_list(request):
     images = Image.objects.all().order_by('-upload_date')
-    return render(request, 'gallery/image_list.html', {'images': images})
+    return render(request, 'gallery/_image_list.html', {'images': images})
 
 
 
