@@ -26,6 +26,8 @@
                             Uploaded on {{ image.upload_date|date:"M d, Y" }}<br>
                             by {{ image.submitter.username }}
                         </div>
+                        <a href="{% url 'gallery:image_detail' image.id %}" class="btn btn-primary btn-sm mt-2">👁 View</a>
+
                         <button class="btn btn-outline-danger btn-sm like-btn"
                         data-id="{{ image.id }}">
                     ❤️ <span class="like-count">{{ image.total_likes }}</span>

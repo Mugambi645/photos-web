@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <img src="{{ image.image_file.url }}" class="card-img-top" alt="{{ image.title }}">
+                <div class="card-body">
+                    <h3 class="card-title">{{ image.title }}</h3>
+                    <p class="card-text">{{ image.description }}</p>
+                    <p><strong>Uploaded:</strong> {{ image.upload_date|date:"M d, Y" }}</p>
+                    <p><strong>Tags:</strong>
+                        {% for tag in image.tags.all %}
+                            <span class="badge bg-secondary">{{ tag.name }}</span>
+                        {% empty %}
+                            <span class="text-muted">No tags</span>
+                        {% endfor %}
+                    </p>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <a href="{{ image.image_file.url }}" download class="btn btn-success">
+                        ⬇️ Download
+                    </a>
+                    <a href="{% url 'core:index' %}" class="btn btn-outline-secondary">Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

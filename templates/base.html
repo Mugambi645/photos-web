@@ -15,7 +15,7 @@
             <a class="navbar-brand" href="{% url 'core:index' %}">My Gallery</a>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav ms-auto">
-
+                    {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link" href="#">Hello, {{ user.username }}</a>
                         </li>
@@ -23,16 +23,17 @@
                             <a class="nav-link" href="{% url 'gallery:upload_image' %}">Upload</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="">Logout</a>
+                            <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
                         </li>
-
+                    {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="">Login</a>
+                            <a class="nav-link" href="{% url 'account_login' %}">Login</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="">Sign Up</a>
+                            <a class="nav-link" href="{% url 'account_signup' %}">Sign Up</a>
                         </li>
-
+                    {% endif %}
+                </ul>
             </div>
         </div>
     </nav>

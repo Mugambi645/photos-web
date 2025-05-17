@@ -47,7 +47,7 @@ def apply_filter(img_path, filter_type):
     cv2.imwrite(img_path, img)
 
 # Upload view
-# @login_required
+#@login_required
 def upload_image(request):
     if request.method == 'POST':
         form = ImageUploadForm(request.POST, request.FILES)
@@ -172,3 +172,8 @@ def toggle_like(request, image_id):
         })
 
     return redirect(request.META.get('HTTP_REFERER', 'core:index'))
+
+
+def image_detail(request, image_id):
+    image = get_object_or_404(Image, id=image_id)
+    return render(request, 'gallery/image_detail.html', {'image': image})
