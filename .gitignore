@@ -2,3 +2,4 @@ frontend/node_modules
 venv
 core/__pycache__
 gallery/__pycache__
+photos/__pycache__
