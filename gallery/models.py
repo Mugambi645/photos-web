@@ -7,7 +7,7 @@ class Image(models.Model):
     description = models.TextField(blank=True)
     upload_date = models.DateTimeField(auto_now_add=True)
     image_file = models.ImageField(upload_to='images/')
-    submitter = models.ForeignKey(User, on_delete=models.CASCADE)
+    submitter = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     width = models.IntegerField(null=True, blank=True)
     height = models.IntegerField(null=True, blank=True)
     format = models.CharField(max_length=50, null=True, blank=True)
