@@ -17,6 +17,10 @@ import base64
 import json
 import urllib.request
 
+
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.shortcuts import get_object_or_404
 # Load pre-trained MobileNetV2 model
 model = torchvision.models.mobilenet_v2(pretrained=True)
 model.eval()
@@ -144,3 +148,27 @@ def user_profile(request, username):
         'uploaded_images': uploaded_images,
         'collections': collections,
     })
+
+
+
+
+
+@require_POST
+@login_required
+def toggle_like(request, image_id):
+    image = get_object_or_404(Image, id=image_id)
+    liked = False
+
+    if request.user in image.likes.all():
+        image.likes.remove(request.user)
+    else:
+        image.likes.add(request.user)
+        liked = True
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse({
+            'liked': liked,
+            'likes_count': image.total_likes()
+        })
+
+    return redirect(request.META.get('HTTP_REFERER', 'core:index'))
