@@ -35,8 +35,8 @@
                         <span class="like-text">Like</span>
                     {% endif %}
                 </button>
-            </div>
                     </div>
+                    
                 </div>
             {% endfor %}
         </div>
@@ -44,3 +44,29 @@
         <div class="alert alert-info">No images uploaded yet.</div>
     {% endif %}
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    $(".like-btn").click(function(e) {
+        e.preventDefault();
+        var btn = $(this);
+        var imageId = btn.data("id");
+
+        $.ajax({
+            type: "POST",
+            url: "/like/" + imageId + "/",
+            headers: { "X-CSRFToken": "{{ csrf_token }}" },
+            success: function(response) {
+                btn.find(".like-count").text(response.likes_count);
+                btn.find(".like-text").text(response.liked ? "Unlike" : "Like");
+            },
+            error: function(xhr) {
+                alert("An error occurred. Please try again.");
+            }
+        });
+    });
+});
+</script>
+
