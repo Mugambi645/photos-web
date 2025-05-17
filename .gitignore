@@ -5,3 +5,5 @@ gallery/__pycache__
 photos/__pycache__
 gallery/templatetags/__pycache__
 gallery/migrations/__pycache__
+accounts/__pycache__
+accounts/migrations/__pycache__
