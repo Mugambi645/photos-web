@@ -12,7 +12,8 @@ class Image(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     upload_date = models.DateTimeField(auto_now_add=True)
-    image_file = models.ImageField(upload_to='images/')
+    image_file = models.ImageField(upload_to='images/', blank=True, null=True)
+
     submitter = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     width = models.IntegerField(null=True, blank=True)
     height = models.IntegerField(null=True, blank=True)

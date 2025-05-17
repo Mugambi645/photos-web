@@ -1,40 +1,68 @@
 {% extends "base.html" %}
 {% load static %}
 {% load form_extras %}
+
 {% block content %}
 <div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card border-0 shadow-lg p-4 rounded-4">
-                <h2 class="text-center mb-4">Upload New Image</h2>
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card border-0 shadow-lg p-4 rounded-4">
+        <h2 class="text-center mb-4">Upload or Capture Image</h2>
 
-                <form method="post" enctype="multipart/form-data" novalidate>
-                    {% csrf_token %}
-                    {% for field in form %}
-                        <div class="mb-3">
-                            <label for="{{ field.id_for_label }}" class="form-label fw-semibold">{{ field.label }}</label>
-                            {{ field|add_class:"form-control" }}
-
-                            {% if field.help_text %}
-                                <div class="form-text">{{ field.help_text }}</div>
-                            {% endif %}
-
-                            {% if field.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ field.errors|striptags }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-
-                    <div class="d-grid mt-4">
-                        <button type="submit" class="btn btn-primary btn-lg rounded-pill">
-                            <i class="bi bi-upload me-2"></i> Upload
-                        </button>
-                    </div>
-                </form>
+        <form method="post" enctype="multipart/form-data" novalidate>
+          {% csrf_token %}
+          {% for field in form %}
+            <div class="mb-3">
+              <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+              {{ field|add_class:"form-control" }}
             </div>
+          {% endfor %}
+          <input type="hidden" name="webcam_image" id="webcam_image_input">
+
+          <div class="text-center my-3">
+            <video id="video" width="100%" autoplay></video>
+            
+            <canvas id="canvas" class="d-none"></canvas>
+            <button type="button" class="btn btn-secondary mt-2" id="capture">📸 Take Photo</button>
+          </div>
+          <div class="mb-3">
+            <label for="id_filter" class="form-label">Choose a Filter</label>
+            {{ form.filter|add_class:"form-select" }}
         </div>
+        
+          <div class="d-grid mt-4">
+            <button type="submit" class="btn btn-primary btn-lg rounded-pill">
+              <i class="bi bi-upload me-2"></i> Submit
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
+
+<script>
+  const video = document.getElementById("video");
+  const canvas = document.getElementById("canvas");
+  const captureButton = document.getElementById("capture");
+  const webcamInput = document.getElementById("webcam_image_input");
+
+  // Start webcam
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+      video.srcObject = stream;
+    });
+
+  // Capture photo
+  captureButton.addEventListener("click", () => {
+    canvas.classList.remove('d-none');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Convert canvas to base64 and store it in hidden input
+    webcamInput.value = canvas.toDataURL("image/png");
+  });
+</script>
 {% endblock %}

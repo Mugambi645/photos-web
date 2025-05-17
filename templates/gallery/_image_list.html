@@ -10,6 +10,17 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ image.title }}</h5>
                             <p class="card-text">{{ image.description }}</p>
+
+                            {% if image.tags.all %}
+                            <p>
+                                <strong>Tags:</strong>
+                                {% for tag in image.tags.all %}
+                                    <span class="badge bg-secondary">{{ tag.name }}</span>
+                                {% empty %}
+                                    <em>No tags</em>
+                                {% endfor %}
+                            </p>
+                            {% endif %}
                         </div>
                         <div class="card-footer text-muted">
                             Uploaded on {{ image.upload_date|date:"M d, Y" }}<br>

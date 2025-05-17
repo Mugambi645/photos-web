@@ -3,3 +3,4 @@ venv
 core/__pycache__
 gallery/__pycache__
 photos/__pycache__
+gallery/templatetags/__pycache__
