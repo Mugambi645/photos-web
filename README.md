@@ -1,13 +1,17 @@
 # 📷 Photos-Web
 
 Photos-Web is a Django-based web application for uploading, tagging, and managing images. It supports automatic image tagging using machine learning, and can be deployed locally, with Docker, or on Kubernetes.
+Additionally, it features an enhanced photo search powered by the Unsplash API for finding and importing high-quality images.
+
 
 ---
 
 ## 🚀 Features
 
 * User authentication
-* Image upload and gallery
+* Image upload or taking own photos and gallery view
+* Liking and unliking images
+* Powerful image search enhanced with unsplash API
 * Automatic image tagging
 * Admin dashboard
 * Dockerized for easy deployment
@@ -27,6 +31,7 @@ Photos-Web is a Django-based web application for uploading, tagging, and managin
 ---
 
 ### ⚙️ Local Development
+
 
 1. **Clone the repository**:
 
@@ -67,6 +72,28 @@ Photos-Web is a Django-based web application for uploading, tagging, and managin
    ```
 
 ---
+
+## 🔍 Usage of Enhanced Photo Search (Unsplash API)
+
+Photos-Web integrates with the [Unsplash API](https://unsplash.com/developers) to allow users to search for and import high-quality photos directly into their galleries.
+
+### Configuration
+
+1. Sign up at [Unsplash Developers](https://unsplash.com/developers) and create an application to get an access key.
+2. Add the access key to your `.env` file:
+
+```
+UNSPLASH_ACCESS_KEY=your_access_key_here
+```
+
+### How It Works
+
+* Use the search bar in the app interface to enter a keyword.
+* The backend queries the Unsplash API for results.
+* Selected images can be imported into the user gallery.
+
+---
+
 
 ### 🐳 Docker Usage
 
@@ -111,7 +138,7 @@ Photos-Web is a Django-based web application for uploading, tagging, and managin
    minikube service photos-web-service
    ```
 
-> ⚠️ **Note**: Ensure the image `mugambi645/photos-web:latest` is public on Docker Hub, and that `ALLOWED_HOSTS` includes the Minikube IP (e.g. `192.168.49.2`).
+> ⚠️ **Note**: Ensure `ALLOWED_HOSTS` includes the Minikube IP (e.g. `192.168.49.2`).
 
 ---
 
@@ -149,7 +176,7 @@ Here are some enhancements planned or recommended for future versions:
 
 ### 🧠 Machine Learning
 
-* [ ] Replace current image tagging model with a more robust PyTorch-based model
+* [ ] Replace current image tagging model with a more finetuned model
 * [ ] Add confidence scores to tags
 * [ ] Run tagging asynchronously using Celery and Redis
 
@@ -177,3 +204,9 @@ MIT License. See `LICENSE` file for details.
 
 **Mugambi Patrick**
 GitHub: [@Mugambi645](https://github.com/Mugambi645)
+
+
+
+
+
+
