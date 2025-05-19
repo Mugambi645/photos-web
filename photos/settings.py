@@ -148,3 +148,9 @@ ACCOUNT_EMAIL_VERIFICATION = 'optional'  # Or 'mandatory' or 'none'
 
 LOGIN_REDIRECT_URL = '/'  # Where to redirect after successful login
 ACCOUNT_LOGOUT_REDIRECT_URL = '/' # Where to redirect after logout
+
+
+# Celery settings
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
