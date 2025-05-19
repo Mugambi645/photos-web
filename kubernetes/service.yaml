@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: photos-web-service
+spec:
+  selector:
+    app: photos-web
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000

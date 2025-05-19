@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: photos-web-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: photos-web
+  template:
+    metadata:
+      labels:
+        app: photos-web
+    spec:
+      containers:
+      - name: photos-web
+        image: mugambi645/photos-web:latest
+        ports:
+        - containerPort: 8000
