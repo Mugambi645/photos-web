@@ -1,20 +1,25 @@
-# Use an official Python image as a base
 FROM python:3.10-slim
 
-# Set the working directory to /app
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    libgl1 \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
 WORKDIR /app
 
-# Copy the requirements file
+# Install Python dependencies using cached layer if requirements haven't changed
 COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Install the dependencies
-RUN pip install -r requirements.txt
-
-# Copy the application code
+# Now copy your app code (after dependencies are installed)
 COPY . .
 
-# Expose the port
-EXPOSE 8000
+# Entry point and final setup
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+ENTRYPOINT ["/app/entrypoint.sh"]
 
-# Run the command to start the development server
+EXPOSE 8000
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
