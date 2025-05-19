@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ profile_user.username }}'s Profile
+{% endblock %}
+
+{% block content %}
+<div class="mb-5">
+    <h1 class="mb-4">{{ profile_user.username }}'s Profile</h1>
+
+    <!-- Uploaded Images Section -->
+    <div class="mb-5">
+        <h2 class="h4">Uploaded Images</h2>
+        <div class="row">
+            {% for image in uploaded_images %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="{{ image.file.url }}" class="card-img-top" alt="{{ image.title }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ image.title }}</h5>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    Uploaded on {{ image.upload_date|date:"F j, Y" }}
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-muted">No images uploaded yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Collections Section -->
+    <div>
+        <h2 class="h4">Collections</h2>
+        <div class="row">
+            {% for collection in collections %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ collection.name }}</h5>
+                            <p class="card-text">{{ collection.description|default:"No description." }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-muted">No collections yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
