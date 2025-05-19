@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Search Results for "{{ query }}"</h2>
+
+    <h3>Local Results</h3>
+    <div class="row">
+        {% for image in local_results %}
+            {% if image.image_file %}
+            <div class="col-md-4 mb-3">
+                <div class="card h-100 shadow-sm">
+                    <img src="{{ image.image_file.url }}" class="card-img-top" alt="{{ image.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ image.title }}</h5>
+                        <a href="{% url 'gallery:image_detail' image.id %}" class="btn btn-primary btn-sm">View</a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        {% empty %}
+            <p>No local results found.</p>
+        {% endfor %}
+    </div>
+    
+    <!-- Unsplash results -->
+    <h4 class="mt-5">Results from Unsplash</h4>
+    <div class="row">
+        {% for result in unsplash_results %}
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <img src="{{ result.urls.small }}" class="card-img-top" alt="{{ result.alt_description }}">
+                    <div class="card-body">
+                        <p class="card-text">{{ result.description|default:result.alt_description }}</p>
+                        <a href="{{ result.links.html }}" target="_blank" class="btn btn-sm btn-outline-secondary">View on Unsplash</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-muted">No Unsplash results found.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

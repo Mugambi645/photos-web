@@ -144,15 +144,6 @@ def image_list(request):
 
     return render(request, 'gallery/_image_list.html', {'images': images})
 
-def search_images(request):
-    query = request.GET.get('q')
-    results = []
-    if query:
-        results = Image.objects.filter(
-            Image.Q(title__icontains=query) | models.Q(description__icontains=query)
-        ).order_by('-upload_date')
-    return render(request, 'gallery/search_results.html', {'results': results, 'query': query})
-
 
 
 
