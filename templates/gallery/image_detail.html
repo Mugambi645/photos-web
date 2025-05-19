@@ -29,4 +29,10 @@
         </div>
     </div>
 </div>
+<div class="container mt-5">
+    <a href="{% url 'gallery:find_similar_images' image.id %}" class="btn btn-outline-primary">
+        🔍 Find Similar Images
+    </a>
+   
+</div>
 {% endblock %}

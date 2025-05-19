@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}
+Similar Images - {{ query_image.title }}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Back to Detail Button -->
+    <div class="mb-3">
+        <a href="{% url 'gallery:image_detail' query_image.id %}" class="btn btn-outline-secondary">
+            ← Back to Image Details
+        </a>
+    </div>
+
+    <!-- Heading -->
+    <h1 class="mb-4 text-center">Similar Images to <strong>{{ query_image.title }}</strong></h1>
+
+    <!-- Query Image -->
+    <div class="text-center mb-5">
+        <h5 class="text-muted">Query Image</h5>
+        <img src="{{ query_image.image_file.url }}" class="img-thumbnail shadow" style="max-width: 300px;" alt="{{ query_image.title }}">
+    </div>
+
+    <!-- Similar Images Section -->
+    <h4 class="mb-3">Top 10 Similar Images</h4>
+    <div class="row">
+        {% for image, similarity in similar_images %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <img src="{{ image.image_file.url }}" class="card-img-top" alt="{{ image.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ image.title }}</h5>
+                        <p class="card-text text-muted">Similarity Score: {{ similarity|floatformat:2 }}</p>
+                        <a href="{% url 'gallery:image_detail' image.id %}" class="btn btn-sm btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <p class="text-muted">No similar images found.</p>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

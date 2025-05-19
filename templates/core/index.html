@@ -2,6 +2,80 @@
 {% load static %}
 {% block content %}
 <div class="container mt-5">
-    {% include "gallery/_image_list.html" %}
+    <div class="container my-5">
+        <h1 class="mb-4">Latest Images</h1>
+    
+        {% if images %}
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+                {% for image in images %}
+                    <div class="col">
+                        <div class="card h-100 shadow-sm">
+                            <img src="{{ image.image_file.url }}" class="card-img-top" alt="{{ image.description }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ image.title }}</h5>
+                                <p class="card-text">{{ image.description }}</p>
+    
+                                {% if image.tags.all %}
+                                <p>
+                                    <strong>Tags:</strong>
+                                    {% for tag in image.tags.all %}
+                                        <span class="badge bg-secondary">{{ tag.name }}</span>
+                                    {% empty %}
+                                        <em>No tags</em>
+                                    {% endfor %}
+                                </p>
+                                {% endif %}
+                            </div>
+                            <div class="card-footer text-muted">
+                                Uploaded on {{ image.upload_date|date:"M d, Y" }}<br>
+                                by {{ image.submitter.username }}
+                            </div>
+                            <a href="{% url 'gallery:image_detail' image.id %}" class="btn btn-primary btn-sm mt-2">👁 View</a>
+    
+                            <button class="btn btn-outline-danger btn-sm like-btn"
+                            data-id="{{ image.id }}">
+                        ❤️ <span class="like-count">{{ image.total_likes }}</span>
+                        {% if user in image.likes.all %}
+                            <span class="like-text">Unlike</span>
+                        {% else %}
+                            <span class="like-text">Like</span>
+                        {% endif %}
+                    </button>
+                        </div>
+                        
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">No images uploaded yet.</div>
+        {% endif %}
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <script>
+    $(document).ready(function() {
+        $(".like-btn").click(function(e) {
+            e.preventDefault();
+            var btn = $(this);
+            var imageId = btn.data("id");
+    
+            $.ajax({
+                type: "POST",
+                url: "/like/" + imageId + "/",
+                headers: { "X-CSRFToken": "{{ csrf_token }}" },
+                success: function(response) {
+                    btn.find(".like-count").text(response.likes_count);
+                    btn.find(".like-text").text(response.liked ? "Unlike" : "Like");
+                },
+                error: function(xhr) {
+                    alert("An error occurred. Please try again.");
+                }
+            });
+        });
+    });
+    </script>
+    
+    
 </div>
 {% endblock %}

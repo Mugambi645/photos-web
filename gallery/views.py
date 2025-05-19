@@ -28,6 +28,12 @@ from django.conf import settings
 import os
 
 
+from sklearn.metrics.pairwise import cosine_similarity
+from torchvision import models
+from PIL import Image as PILImage
+
+
+
 # Load pre-trained MobileNetV2 model
 model = torchvision.models.mobilenet_v2(pretrained=True)
 model.eval()
@@ -132,9 +138,11 @@ def upload_image(request):
 """
 def image_list(request):
     images = Image.objects.all().order_by('-upload_date')
+
+    # Filter out images that have no file or the file is missing
+    images = [img for img in images if img.image_file and os.path.exists(img.image_file.path)]
+
     return render(request, 'gallery/_image_list.html', {'images': images})
-
-
 
 def search_images(request):
     query = request.GET.get('q')
@@ -144,18 +152,6 @@ def search_images(request):
             Image.Q(title__icontains=query) | models.Q(description__icontains=query)
         ).order_by('-upload_date')
     return render(request, 'gallery/search_results.html', {'results': results, 'query': query})
-
-
-def user_profile(request, username):
-    user = User.objects.get(username=username)
-    uploaded_images = Image.objects.filter(submitter=user).order_by('-upload_date')
-    collections = Collection.objects.filter(owner=user).order_by('-name')
-    return render(request, 'gallery/user_profile.html', {
-        'profile_user': user,
-        'uploaded_images': uploaded_images,
-        'collections': collections,
-    })
-
 
 
 
@@ -199,3 +195,67 @@ def download_image(request, image_id):
         return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=os.path.basename(file_path))
     else:
         raise Http404("Image not found.")
+
+
+#similar images
+
+
+# Load pre-trained model
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = models.mobilenet_v2(pretrained=True)
+model.classifier = torch.nn.Identity()  # Remove classification layer
+model.eval().to(device)
+
+# Image transformation
+transform = transforms.Compose([
+    transforms.Resize((224, 224)),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                         std=[0.229, 0.224, 0.225]),
+])
+
+def get_image_embedding(img_path):
+    img = PILImage.open(img_path).convert('RGB')
+    img_tensor = transform(img).unsqueeze(0).to(device)  # Add batch dimension
+    with torch.no_grad():
+        features = model(img_tensor)
+    features = features.cpu().numpy().flatten()
+    normalized = features / np.linalg.norm(features)
+    return normalized
+
+def find_similar_images(request, image_id):
+    query_image = get_object_or_404(Image, id=image_id)
+
+    # Skip if query image has no file
+    if not query_image.image_file or not query_image.image_file.path:
+        return render(request, 'gallery/similar_images.html', {
+            'query_image': query_image,
+            'similar_images': [],
+            'error': 'This image has no associated file.'
+        })
+
+    query_embedding = get_image_embedding(query_image.image_file.path)
+
+    all_images = Image.objects.exclude(id=image_id)
+    similarities = []
+
+    for img in all_images:
+        try:
+            if not img.image_file or not img.image_file.path:
+                continue
+            embedding = get_image_embedding(img.image_file.path)
+            similarity = cosine_similarity(
+                query_embedding.reshape(1, -1),
+                embedding.reshape(1, -1)
+            )[0][0]
+            similarities.append((img, similarity))
+        except Exception as e:
+            print(f"Skipping image {img.id}: {e}")
+            continue
+
+    similar_images = sorted(similarities, key=lambda x: x[1], reverse=True)[:6]
+
+    return render(request, 'gallery/similar_images.html', {
+        'query_image': query_image,
+        'similar_images': similar_images,
+    })
